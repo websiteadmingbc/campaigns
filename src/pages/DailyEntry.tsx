@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { RefreshCw } from 'lucide-react'
 import { Button, EmptyState, ErrorMessage, Input, LoadingState, PageHeader, Select } from '../components/ui'
-import { fetchCampaigns, importMetricsCsv, upsertDailyMetric } from '../lib/api'
+import { fetchCampaigns, importMetricsCsv, syncNextdoorMetrics, upsertDailyMetric } from '../lib/api'
 import { todayLA } from '../lib/format'
 import type { Campaign } from '../lib/types'
 
@@ -122,13 +123,54 @@ export function DailyEntryPage() {
     }
   }
 
+  async function onNextdoorSync() {
+    const selected = campaigns.find((c) => c.id === campaignId)
+    if (!selected) {
+      setError('Select a campaign first')
+      return
+    }
+    if (selected.platform !== 'Nextdoor') {
+      setError('Nextdoor sync only works for Nextdoor campaigns')
+      return
+    }
+    if (!selected.nextdoor_campaign_id) {
+      setError('Edit the campaign and add the Nextdoor campaign ID first')
+      return
+    }
+    setSaving(true)
+    setError(null)
+    setSuccess(null)
+    try {
+      const result = await syncNextdoorMetrics({ campaign_id: selected.id, lookback_days: 14 })
+      const row = result.results?.[0]
+      if (row?.skipped) {
+        setSuccess(row.reason || 'Nothing to sync yet')
+      } else if (row) {
+        setSuccess(`Synced ${row.upserted ?? 0} day(s) from Nextdoor for ${selected.name}`)
+        if (row.errors?.length) setError(row.errors.slice(0, 3).join(' · '))
+      } else {
+        setSuccess(result.message || 'Sync finished')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nextdoor sync failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   if (loading) return <LoadingState />
 
   return (
     <div>
       <PageHeader
         title="Daily entry"
-        subtitle="Quickly log one day’s metrics, or import a CSV from the ad platform."
+        subtitle="Log one day manually, import CSV, or sync from the Nextdoor Ads API."
+        actions={
+          <Button variant="secondary" onClick={onNextdoorSync} disabled={saving || !campaignId}>
+            <RefreshCw size={16} className={saving ? 'animate-spin' : ''} />
+            Sync Nextdoor
+          </Button>
+        }
       />
 
       {error && (

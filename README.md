@@ -10,6 +10,7 @@ Built with Vite + React + TypeScript, Tailwind CSS, Recharts, and Supabase (auth
 - Roles: **admin** (create/edit/archive, enter metrics) and **viewer** (read-only)
 - Campaign CRUD with ad visual uploads
 - Daily metrics entry + CSV import
+- **Nextdoor Ads API sync** (Edge Function → `daily_metrics`)
 - Overview KPIs and charts
 - Campaign detail with pacing, leads pipeline, weekly reports
 - Printable weekly reports with shareable links
@@ -20,7 +21,10 @@ Built with Vite + React + TypeScript, Tailwind CSS, Recharts, and Supabase (auth
 ### 1. Supabase project
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor** and run [`supabase/migrations/001_initial.sql`](supabase/migrations/001_initial.sql).
+2. Open **SQL Editor** and run the migrations in order:
+   - [`supabase/migrations/001_initial.sql`](supabase/migrations/001_initial.sql)
+   - [`supabase/migrations/002_nextdoor_campaign_details.sql`](supabase/migrations/002_nextdoor_campaign_details.sql)
+   - [`supabase/migrations/003_nextdoor_sync.sql`](supabase/migrations/003_nextdoor_sync.sql)
 3. In **Authentication → URL Configuration**, add redirect URLs:
    - `http://localhost:5173/`
    - `https://campaigns.greatbrittongc.com/`
@@ -48,7 +52,36 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
-### 4. Brand accent
+### 4. Nextdoor Ads API sync (optional)
+
+Pulls impressions / clicks / spend / lead conversions into `daily_metrics` so you don’t have to enter them by hand.
+
+1. Request Ads API access if needed: [Nextdoor applying for access](https://developer.nextdoor.com/reference/applying-for-access).
+2. Generate a token in Nextdoor Ads Manager: [https://ads.nextdoor.com/v2/manage/api](https://ads.nextdoor.com/v2/manage/api).
+3. Deploy the Edge Function and set secrets:
+
+```bash
+supabase login
+supabase link --project-ref tyrbmlsnkqttbtztvflg
+supabase secrets set NEXTDOOR_API_TOKEN="your-token" NEXTDOOR_ADVERTISER_ID="1059681864853227341" SYNC_CRON_SECRET="long-random-string"
+supabase functions deploy sync-nextdoor-metrics
+```
+
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are provided automatically to functions.
+
+4. Edit the campaign in the app → fill **Nextdoor campaign ID** (and advertiser ID if different).
+5. Click **Sync Nextdoor** on the campaign detail or Daily Entry page (admin only). Default lookback is 7–14 days through yesterday.
+
+Optional daily cron (Supabase scheduled trigger or external cron):
+
+```bash
+curl -X POST "https://tyrbmlsnkqttbtztvflg.supabase.co/functions/v1/sync-nextdoor-metrics" \
+  -H "x-sync-secret: YOUR_SYNC_CRON_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{"lookback_days":7}'
+```
+
+### 5. Brand accent
 
 Change the accent color in [`src/index.css`](src/index.css):
 
@@ -75,14 +108,7 @@ The app uses **HashRouter**, so routes work on GitHub Pages without a rewrite se
 
 ## Seed data
 
-The migration seeds one campaign:
-
-- **Nextdoor — Launch Campaign**
-- Platform: Nextdoor
-- Start: 2026-11-10
-- Duration: 30 days
-- Status: Active (derived from dates)
-- Budget / metrics: empty for you to fill in
+The migrations seed / update the Nextdoor remodel outreach campaign (30 days, $12/day). Paste the Nextdoor **campaign ID** in Edit to enable API sync.
 
 ## Project structure
 
@@ -94,6 +120,7 @@ src/
   pages/          # Overview, detail, forms, reports, upcoming, daily entry
 supabase/
   migrations/     # SQL schema, RLS, storage, seed
+  functions/      # sync-nextdoor-metrics Edge Function
 .github/workflows/deploy.yml
 public/CNAME
 ```

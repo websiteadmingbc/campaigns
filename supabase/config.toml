@@ -1,0 +1,4 @@
+# Minimal Supabase config for Edge Functions deploy
+
+[functions.sync-nextdoor-metrics]
+verify_jwt = false

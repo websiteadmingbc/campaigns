@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Archive, Copy, Pencil } from 'lucide-react'
+import { Archive, Copy, Pencil, RefreshCw } from 'lucide-react'
 import { AdVisualUpload } from '../components/AdVisualUpload'
 import {
   Button,
@@ -33,6 +33,7 @@ import {
   fetchLeads,
   fetchMetrics,
   fetchWeeklyNotes,
+  syncNextdoorMetrics,
   updateLead,
   uploadAdVisual,
   upsertWeeklyNote,
@@ -59,6 +60,7 @@ export function CampaignDetailPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [syncMessage, setSyncMessage] = useState<string | null>(null)
 
   const [leadForm, setLeadForm] = useState({
     name: '',
@@ -153,6 +155,37 @@ export function CampaignDetailPage() {
     }
   }
 
+  async function handleNextdoorSync() {
+    if (!campaign) return
+    if (!campaign.nextdoor_campaign_id) {
+      setError('Add the Nextdoor campaign ID on the Edit screen before syncing.')
+      return
+    }
+    setBusy(true)
+    setError(null)
+    setSyncMessage(null)
+    try {
+      const result = await syncNextdoorMetrics({ campaign_id: campaign.id, lookback_days: 14 })
+      const row = result.results?.[0]
+      if (row?.skipped) {
+        setSyncMessage(row.reason || 'Nothing to sync yet')
+      } else if (row) {
+        setSyncMessage(
+          `Synced ${row.upserted ?? 0} of ${row.days_requested ?? 0} days from Nextdoor` +
+            (row.errors?.length ? ` (${row.errors.length} day error${row.errors.length === 1 ? '' : 's'})` : ''),
+        )
+        if (row.errors?.length) setError(row.errors.slice(0, 3).join(' · '))
+      } else {
+        setSyncMessage(result.message || 'Sync finished')
+      }
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nextdoor sync failed')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function onAddLead(e: FormEvent) {
     e.preventDefault()
     if (!campaign || !leadForm.name.trim()) return
@@ -238,6 +271,12 @@ export function CampaignDetailPage() {
         actions={
           isAdmin ? (
             <>
+              {campaign.platform === 'Nextdoor' && (
+                <Button variant="secondary" onClick={handleNextdoorSync} disabled={busy}>
+                  <RefreshCw size={16} className={busy ? 'animate-spin' : ''} />
+                  Sync Nextdoor
+                </Button>
+              )}
               <Link to={`/campaigns/${campaign.id}/edit`}>
                 <Button variant="secondary">
                   <Pencil size={16} />
@@ -256,6 +295,12 @@ export function CampaignDetailPage() {
           ) : undefined
         }
       />
+
+      {syncMessage && (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          {syncMessage}
+        </div>
+      )}
 
       {error && (
         <div className="mb-4">

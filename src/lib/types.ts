@@ -70,6 +70,8 @@ export interface Campaign {
   utm_medium: string | null
   utm_campaign: string | null
   notes: string | null
+  nextdoor_advertiser_id: string | null
+  nextdoor_campaign_id: string | null
   archived: boolean
   created_by: string | null
   created_at: string

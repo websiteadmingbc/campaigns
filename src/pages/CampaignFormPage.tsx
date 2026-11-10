@@ -35,6 +35,8 @@ type FormState = {
   utm_medium: string
   utm_campaign: string
   notes: string
+  nextdoor_advertiser_id: string
+  nextdoor_campaign_id: string
 }
 
 const emptyForm: FormState = {
@@ -56,6 +58,8 @@ const emptyForm: FormState = {
   utm_medium: '',
   utm_campaign: '',
   notes: '',
+  nextdoor_advertiser_id: '1059681864853227341',
+  nextdoor_campaign_id: '',
 }
 
 function campaignToForm(c: Campaign): FormState {
@@ -78,6 +82,8 @@ function campaignToForm(c: Campaign): FormState {
     utm_medium: c.utm_medium || '',
     utm_campaign: c.utm_campaign || '',
     notes: c.notes || '',
+    nextdoor_advertiser_id: c.nextdoor_advertiser_id || '1059681864853227341',
+    nextdoor_campaign_id: c.nextdoor_campaign_id || '',
   }
 }
 
@@ -183,6 +189,8 @@ export function CampaignFormPage() {
         utm_medium: form.utm_medium || null,
         utm_campaign: form.utm_campaign || null,
         notes: form.notes || null,
+        nextdoor_advertiser_id: form.nextdoor_advertiser_id.trim() || null,
+        nextdoor_campaign_id: form.nextdoor_campaign_id.trim() || null,
         archived: false,
       }
 
@@ -354,6 +362,30 @@ export function CampaignFormPage() {
           />
           <TextArea label="Notes" value={form.notes} onChange={(e) => setField('notes', e.target.value)} />
         </section>
+
+        {form.platform === 'Nextdoor' && (
+          <section className="card-surface p-4 sm:p-6 space-y-4">
+            <h2 className="text-lg font-semibold">Nextdoor API sync</h2>
+            <p className="text-xs text-[var(--color-ink-muted)]">
+              Paste IDs from Nextdoor Ads Manager so metrics can sync automatically. Advertiser ID is
+              usually your account ID. Campaign ID is on the campaign URL/details page.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Input
+                label="Nextdoor advertiser ID"
+                value={form.nextdoor_advertiser_id}
+                onChange={(e) => setField('nextdoor_advertiser_id', e.target.value)}
+                placeholder="1059681864853227341"
+              />
+              <Input
+                label="Nextdoor campaign ID"
+                value={form.nextdoor_campaign_id}
+                onChange={(e) => setField('nextdoor_campaign_id', e.target.value)}
+                placeholder="Required for Sync from Nextdoor"
+              />
+            </div>
+          </section>
+        )}
 
         <section className="card-surface p-4 sm:p-6 space-y-4">
           <h2 className="text-lg font-semibold">UTM parameters</h2>

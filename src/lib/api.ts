@@ -75,6 +75,7 @@ export async function duplicateCampaign(source: Campaign, userId: string): Promi
       status_locked: true,
       start_date: null,
       end_date: null,
+      nextdoor_campaign_id: null,
       archived: false,
     },
     userId,
@@ -266,4 +267,37 @@ export async function upsertWeeklyNote(
     .select()
     .single()
   return throwIfError(data, error)
+}
+
+export type NextdoorSyncResult = {
+  ok?: boolean
+  synced?: number
+  message?: string
+  error?: string
+  results?: Array<{
+    campaign_id: string
+    name: string
+    upserted?: number
+    days_requested?: number
+    skipped?: boolean
+    reason?: string
+    errors?: string[]
+  }>
+}
+
+/** Calls the sync-nextdoor-metrics Edge Function (admin JWT required). */
+export async function syncNextdoorMetrics(options?: {
+  campaign_id?: string
+  lookback_days?: number
+}): Promise<NextdoorSyncResult> {
+  const { data, error } = await supabase.functions.invoke('sync-nextdoor-metrics', {
+    body: {
+      campaign_id: options?.campaign_id,
+      lookback_days: options?.lookback_days ?? 7,
+    },
+  })
+  if (error) throw new Error(error.message)
+  const result = data as NextdoorSyncResult
+  if (result?.error) throw new Error(result.error)
+  return result
 }
