@@ -50,7 +50,7 @@ export function LoginPage() {
         </div>
 
         {configMissing && (
-          <ErrorMessage message="Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file." />
+          <ErrorMessage message="Supabase is not configured. Locally: set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env. On the live site: add those as GitHub Actions secrets (URL must be https://….supabase.co, key must be publishable/anon — not sb_secret_), then redeploy." />
         )}
 
         {!configMissing && sent ? (

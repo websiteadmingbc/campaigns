@@ -30,6 +30,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify Supabase secrets
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ] || [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
+            echo "::error::Missing GitHub Actions secrets VITE_SUPABASE_URL and/or VITE_SUPABASE_ANON_KEY"
+            exit 1
+          fi
+          case "$VITE_SUPABASE_URL" in
+            http://*|https://*) ;;
+            *)
+              echo "::error::VITE_SUPABASE_URL must start with https:// (got: $VITE_SUPABASE_URL)"
+              exit 1
+              ;;
+          esac
+          case "$VITE_SUPABASE_ANON_KEY" in
+            sb_secret_*)
+              echo "::error::VITE_SUPABASE_ANON_KEY must be the publishable/anon key, not sb_secret_"
+              exit 1
+              ;;
+          esac
+          echo "Supabase secrets look valid."
+
       - name: Build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
