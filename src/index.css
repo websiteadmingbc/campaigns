@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --color-brand: #c4a35a;
+  --color-brand-dark: #9a7d3a;
+  --color-ink: #1a1a1a;
+  --color-ink-muted: #5c5c5c;
+  --color-surface: #f7f6f3;
+  --color-surface-elevated: #ffffff;
+  --color-header: #1f1f1f;
+  --color-border: #e4e1da;
+  --color-success: #2f6b4f;
+  --color-warning: #b45309;
+  --color-danger: #b42318;
+}
+
+:root {
+  /* Change this single accent to rebrand */
+  --accent: #c4a35a;
+  --accent-foreground: #1a1a1a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent),
+    linear-gradient(180deg, #f7f6f3 0%, #efece5 100%);
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.border-accent {
+  border-color: var(--accent);
+}
+
+.focus-ring:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.card-surface {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.status-draft {
+  background: #f3f4f6;
+  color: #374151;
+}
+.status-scheduled {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.status-active {
+  background: #ecfdf5;
+  color: #047857;
+}
+.status-paused {
+  background: #fffbeb;
+  color: #b45309;
+}
+.status-completed {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-break {
+    break-inside: avoid;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 1.4s ease-in-out infinite;
+}

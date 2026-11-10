@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" fill="none" role="img" aria-label="Great Britton Construction">
+  <rect width="240" height="48" rx="4" fill="transparent"/>
+  <rect x="2" y="8" width="32" height="32" rx="3" fill="#C4A35A"/>
+  <path d="M10 32V16h6.5c3.2 0 5.2 1.7 5.2 4.2 0 1.6-.8 2.9-2.2 3.5l2.8 8.3h-4.2l-2.4-7.4H14V32H10zm4-10.6h2.2c1.2 0 1.9-.6 1.9-1.5s-.7-1.5-1.9-1.5H14v3z" fill="#1A1A1A"/>
+  <text x="44" y="22" font-family="Georgia, 'Times New Roman', serif" font-size="14" font-weight="700" fill="#F5F5F4" letter-spacing="0.08em">GREAT BRITTON</text>
+  <text x="44" y="38" font-family="Georgia, 'Times New Roman', serif" font-size="10" fill="#C4A35A" letter-spacing="0.22em">CONSTRUCTION</text>
+</svg>
