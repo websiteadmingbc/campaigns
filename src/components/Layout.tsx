@@ -18,7 +18,11 @@ export function Layout() {
       <header className="no-print sticky top-0 z-40 border-b border-black/20 bg-[var(--color-header)] text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
           <NavLink to="/" className="flex items-center gap-3 shrink-0">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Great Britton Construction" className="h-9 w-auto" />
+            <img
+              src={`${import.meta.env.BASE_URL}logo.png`}
+              alt="Great Britton Construction"
+              className="h-10 w-auto max-w-[220px] object-contain object-left"
+            />
           </NavLink>
 
           <nav className="hidden md:flex items-center gap-1">

@@ -59,7 +59,7 @@ Change the accent color in [`src/index.css`](src/index.css):
 }
 ```
 
-Replace [`public/logo.svg`](public/logo.svg) with the real Great Britton logo when ready.
+Brand logo lives at [`public/logo.png`](public/logo.png).
 
 ## Deploy (GitHub Pages)
 

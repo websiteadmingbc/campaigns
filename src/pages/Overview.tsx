@@ -214,7 +214,12 @@ export function OverviewPage() {
                           {c.end_date ? ` – ${formatDate(c.end_date)}` : ''}
                         </p>
                       </div>
-                      <div className="flex gap-4 text-xs sm:text-sm text-[var(--color-ink-muted)]">
+                      <div className="flex flex-wrap gap-3 sm:gap-4 text-xs sm:text-sm text-[var(--color-ink-muted)]">
+                        {c.daily_budget != null && (
+                          <span className="font-medium text-[var(--color-ink)]">
+                            {formatCurrency(Number(c.daily_budget))}/day
+                          </span>
+                        )}
                         <span>Spend {formatCurrency(cMetrics.spend)}</span>
                         <span>Leads {formatNumber(cMetrics.leads)}</span>
                       </div>

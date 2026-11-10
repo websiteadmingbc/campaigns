@@ -270,9 +270,19 @@ export function CampaignDetailPage() {
             Day {progress.day} of {progress.total}
           </span>
         )}
+        {campaign.daily_budget != null && (
+          <span className="inline-flex items-center rounded-md bg-[color-mix(in_srgb,var(--accent)_18%,white)] px-2 py-0.5 text-xs font-semibold text-[var(--color-ink)]">
+            Daily budget {formatCurrency(Number(campaign.daily_budget))}
+          </span>
+        )}
+        {campaign.budget_total != null && (
+          <span className="text-sm text-[var(--color-ink-muted)]">
+            Total budget {formatCurrency(Number(campaign.budget_total))}
+          </span>
+        )}
         {pacing && (
           <span className={`text-sm font-medium ${pacingColor}`}>
-            Budget: {pacing.label}
+            Pace: {pacing.label}
             {pacing.pacePct != null ? ` (${Math.round(pacing.pacePct)}%)` : ''}
           </span>
         )}
@@ -289,7 +299,14 @@ export function CampaignDetailPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
+        <div className="card-surface p-3">
+          <p className="text-xs text-[var(--color-ink-muted)]">Daily budget</p>
+          <p className="font-semibold">{formatCurrency(campaign.daily_budget)}</p>
+          <p className="text-xs text-[var(--color-ink-muted)]">
+            {campaign.duration_days ? `${campaign.duration_days} days` : '—'}
+          </p>
+        </div>
         <div className="card-surface p-3">
           <p className="text-xs text-[var(--color-ink-muted)]">Spend</p>
           <p className="font-semibold">{formatCurrency(totals.spend)}</p>

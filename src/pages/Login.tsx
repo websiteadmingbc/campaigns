@@ -39,9 +39,9 @@ export function LoginPage() {
       <div className="w-full max-w-md card-surface p-6 sm:p-8 animate-fade-up">
         <div className="mb-6 text-center">
           <img
-            src={`${import.meta.env.BASE_URL}logo.svg`}
+            src={`${import.meta.env.BASE_URL}logo.png`}
             alt="Great Britton Construction"
-            className="mx-auto h-12 mb-4 brightness-0"
+            className="mx-auto mb-4 h-16 w-auto max-w-[280px] rounded-md object-contain"
           />
           <h1 className="text-2xl font-semibold">Campaign Tracker</h1>
           <p className="mt-1 text-sm text-[var(--color-ink-muted)]">

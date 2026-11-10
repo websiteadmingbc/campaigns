@@ -413,7 +413,7 @@ insert into public.campaigns (
   utm_campaign,
   objective
 ) values (
-  'Nextdoor — Launch Campaign',
+  'Remodel Outreach - start.greatbrittongc.com - Fall 2026',
   'Nextdoor',
   'Active',
   false,
@@ -422,8 +422,8 @@ insert into public.campaigns (
   '2026-12-09',
   'nextdoor',
   'paid_social',
-  'nextdoor-launch-campaign',
-  'Generate local leads for construction services'
+  'remodel-outreach-fall-2026',
+  'Generate local leads for kitchen & bath remodels'
 );
 
 -- ---------------------------------------------------------------------------
