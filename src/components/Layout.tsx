@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Plus } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { ThemeToggle } from './ThemeToggle'
 import { Button } from './ui'
 
 const nav = [
@@ -45,7 +46,8 @@ export function Layout() {
               ))}
           </nav>
 
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-1 sm:gap-2 text-sm">
+            <ThemeToggle className="text-white/80 hover:bg-white/10 hover:text-white" />
             <div className="hidden sm:block text-right">
               <p className="font-medium leading-tight">{profile?.full_name || profile?.email}</p>
               <p className="text-xs text-white/60 capitalize">{profile?.role}</p>

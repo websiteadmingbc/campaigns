@@ -2,6 +2,7 @@ import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import { CampaignDetailPage } from './pages/CampaignDetail'
 import { CampaignFormPage } from './pages/CampaignFormPage'
 import { DailyEntryPage } from './pages/DailyEntry'
@@ -12,30 +13,32 @@ import { WeeklyReportPage } from './pages/WeeklyReport'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <HashRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <HashRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route index element={<OverviewPage />} />
-              <Route path="upcoming" element={<UpcomingPage />} />
-              <Route path="campaigns/:id/reports/:weekStart" element={<WeeklyReportPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route index element={<OverviewPage />} />
+                <Route path="upcoming" element={<UpcomingPage />} />
+                <Route path="campaigns/:id/reports/:weekStart" element={<WeeklyReportPage />} />
 
-              <Route element={<ProtectedRoute adminOnly />}>
-                <Route path="campaigns/new" element={<CampaignFormPage />} />
-                <Route path="campaigns/:id/edit" element={<CampaignFormPage />} />
-                <Route path="daily-entry" element={<DailyEntryPage />} />
+                <Route element={<ProtectedRoute adminOnly />}>
+                  <Route path="campaigns/new" element={<CampaignFormPage />} />
+                  <Route path="campaigns/:id/edit" element={<CampaignFormPage />} />
+                  <Route path="daily-entry" element={<DailyEntryPage />} />
+                </Route>
+
+                <Route path="campaigns/:id" element={<CampaignDetailPage />} />
               </Route>
-
-              <Route path="campaigns/:id" element={<CampaignDetailPage />} />
             </Route>
-          </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </HashRouter>
-    </AuthProvider>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </HashRouter>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }

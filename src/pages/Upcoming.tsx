@@ -118,7 +118,9 @@ export function UpcomingPage() {
               <div
                 key={key}
                 className={`min-h-20 rounded-lg border p-1.5 text-left ${
-                  inMonth ? 'border-[var(--color-border)] bg-white' : 'border-transparent bg-transparent opacity-40'
+                  inMonth
+                    ? 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'
+                    : 'border-transparent bg-transparent opacity-40'
                 } ${isToday ? 'ring-2 ring-[var(--accent)]' : ''}`}
               >
                 <p className="text-xs font-medium mb-1">{format(day, 'd')}</p>

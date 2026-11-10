@@ -69,7 +69,7 @@ export function AdVisualUpload({
       {existing.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {existing.map((v) => (
-            <figure key={v.id} className="relative group overflow-hidden rounded-xl border border-[var(--color-border)] bg-white">
+            <figure key={v.id} className="relative group overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)]">
               <img src={v.image_url} alt={v.caption || 'Ad visual'} className="aspect-square w-full object-cover" />
               <figcaption className="p-2 text-xs text-[var(--color-ink-muted)]">
                 {v.version_label && <span className="font-medium text-[var(--color-ink)]">{v.version_label} · </span>}
@@ -100,14 +100,16 @@ export function AdVisualUpload({
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
             className={`rounded-xl border-2 border-dashed px-4 py-8 text-center transition ${
-              dragging ? 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_12%,white)]' : 'border-[var(--color-border)] bg-white'
+              dragging
+                ? 'border-[var(--accent)] bg-[color-mix(in_srgb,var(--accent)_12%,var(--color-surface-elevated))]'
+                : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)]'
             }`}
           >
             <ImagePlus className="mx-auto mb-2 text-[var(--color-ink-muted)]" size={28} />
             <p className="text-sm font-medium">Drag & drop ad visuals here</p>
             <p className="mt-1 text-xs text-[var(--color-ink-muted)]">PNG, JPG, WEBP up to 10MB</p>
             <label className="mt-3 inline-flex cursor-pointer">
-              <span className="rounded-lg border border-[var(--color-border)] bg-white px-3 py-1.5 text-sm hover:bg-[var(--color-surface)]">
+              <span className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-1.5 text-sm hover:bg-[var(--color-surface)]">
                 Browse files
               </span>
               <input
@@ -123,7 +125,7 @@ export function AdVisualUpload({
           {pending.length > 0 && (
             <div className="space-y-3">
               {pending.map((item, idx) => (
-                <div key={item.preview} className="flex gap-3 rounded-xl border border-[var(--color-border)] bg-white p-3">
+                <div key={item.preview} className="flex gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3">
                   <img src={item.preview} alt="" className="h-16 w-16 rounded-lg object-cover" />
                   <div className="flex-1 grid sm:grid-cols-2 gap-2">
                     <input

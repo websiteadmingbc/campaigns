@@ -179,7 +179,7 @@ export function DailyEntryPage() {
         </div>
       )}
       {success && (
-        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-100">
           {success}
         </div>
       )}
@@ -260,7 +260,7 @@ export function DailyEntryPage() {
               ))}
             </Select>
             <label className="block">
-              <span className="inline-flex cursor-pointer rounded-lg border border-[var(--color-border)] bg-white px-3 py-2 text-sm hover:bg-[var(--color-surface)]">
+              <span className="inline-flex cursor-pointer rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 py-2 text-sm hover:bg-[var(--color-surface)]">
                 Choose CSV file
               </span>
               <input

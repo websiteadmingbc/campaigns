@@ -1,11 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
   --color-brand: #c4a35a;
   --color-brand-dark: #9a7d3a;
+}
+
+:root,
+html[data-theme='light'] {
+  /* Change this single accent to rebrand */
+  --accent: #c4a35a;
+  --accent-foreground: #1a1a1a;
+
   --color-ink: #1a1a1a;
   --color-ink-muted: #5c5c5c;
   --color-surface: #f7f6f3;
@@ -15,12 +25,29 @@
   --color-success: #2f6b4f;
   --color-warning: #b45309;
   --color-danger: #b42318;
+  --page-bg-top: #f7f6f3;
+  --page-bg-bottom: #efece5;
+  --input-bg: #ffffff;
+  --input-border: #e4e1da;
 }
 
-:root {
-  /* Change this single accent to rebrand */
+html[data-theme='dark'] {
   --accent: #c4a35a;
   --accent-foreground: #1a1a1a;
+
+  --color-ink: #f3efe8;
+  --color-ink-muted: #b7b0a4;
+  --color-surface: #2a221c;
+  --color-surface-elevated: #352b23;
+  --color-header: #140f0c;
+  --color-border: #4a3d32;
+  --color-success: #6fbf93;
+  --color-warning: #e0a15a;
+  --color-danger: #f07167;
+  --page-bg-top: #1a1410;
+  --page-bg-bottom: #120e0b;
+  --input-bg: #241c17;
+  --input-border: #4a3d32;
 }
 
 * {
@@ -29,6 +56,11 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 body {
@@ -38,8 +70,9 @@ body {
   color: var(--color-ink);
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent),
-    linear-gradient(180deg, #f7f6f3 0%, #efece5 100%);
+    linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
   background-attachment: fixed;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 #root {
@@ -89,6 +122,36 @@ textarea {
   border-radius: 12px;
 }
 
+/* Sign-in card: always dark brown for brand presence */
+.login-card {
+  background: linear-gradient(165deg, #3a2a1f 0%, #2a1d15 55%, #231811 100%);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, #4a3528);
+  border-radius: 12px;
+  color: #f5f0e8;
+  box-shadow:
+    0 18px 40px rgba(20, 12, 8, 0.35),
+    inset 0 1px 0 rgba(196, 163, 90, 0.18);
+}
+
+.login-card .login-muted {
+  color: #cbbba8;
+}
+
+.login-card label span,
+.login-card .login-title {
+  color: #f8f4ee;
+}
+
+.login-card input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(196, 163, 90, 0.35);
+  color: #f8f4ee;
+}
+
+.login-card input::placeholder {
+  color: #a89886;
+}
+
 .status-draft {
   background: #f3f4f6;
   color: #374151;
@@ -110,9 +173,31 @@ textarea {
   color: #6b7280;
 }
 
+html[data-theme='dark'] .status-draft {
+  background: #3a3530;
+  color: #d1d5db;
+}
+html[data-theme='dark'] .status-scheduled {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+html[data-theme='dark'] .status-active {
+  background: #1a3d2e;
+  color: #6ee7b7;
+}
+html[data-theme='dark'] .status-paused {
+  background: #3d2e16;
+  color: #fbbf24;
+}
+html[data-theme='dark'] .status-completed {
+  background: #3a3530;
+  color: #9ca3af;
+}
+
 @media print {
   body {
     background: white !important;
+    color: #1a1a1a !important;
   }
 
   .no-print {
