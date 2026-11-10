@@ -138,7 +138,10 @@ export async function uploadAdVisual(
   return throwIfError(data, error)
 }
 
-export async function deleteAdVisual(visual: AdVisual): Promise<void> {
+export async function deleteAdVisual(visual: {
+  id: string
+  storage_path?: string | null
+}): Promise<void> {
   if (visual.storage_path) {
     await supabase.storage.from('ad-visuals').remove([visual.storage_path])
   }

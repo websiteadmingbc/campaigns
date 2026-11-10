@@ -1,14 +1,15 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Plus } from 'lucide-react'
+import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Plus, Printer } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { ThemeToggle } from './ThemeToggle'
 import { Button } from './ui'
 
 const nav = [
   { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
+  { to: '/traditional', label: 'Traditional', icon: Printer },
   { to: '/upcoming', label: 'Upcoming', icon: CalendarDays },
   { to: '/daily-entry', label: 'Daily Entry', icon: ClipboardList, adminOnly: true },
-  { to: '/campaigns/new', label: 'New Campaign', icon: Plus, adminOnly: true },
+  { to: '/campaigns/new', label: 'New Digital', icon: Plus, adminOnly: true },
 ]
 
 export function Layout() {

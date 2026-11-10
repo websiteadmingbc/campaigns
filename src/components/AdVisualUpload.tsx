@@ -1,7 +1,16 @@
 import { useCallback, useState, type DragEvent } from 'react'
 import { ImagePlus, Trash2, Upload } from 'lucide-react'
-import type { AdVisual } from '../lib/types'
 import { Button } from './ui'
+
+export type VisualItem = {
+  id: string
+  image_url: string
+  caption: string | null
+  version_label: string | null
+  storage_path?: string | null
+  campaign_id?: string
+  created_at?: string
+}
 
 interface PendingFile {
   file: File
@@ -16,9 +25,9 @@ export function AdVisualUpload({
   onDelete,
   readOnly,
 }: {
-  existing: AdVisual[]
+  existing: VisualItem[]
   onUpload: (file: File, meta: { caption?: string; version_label?: string }) => Promise<void>
-  onDelete?: (visual: AdVisual) => Promise<void>
+  onDelete?: (visual: VisualItem) => Promise<void>
   readOnly?: boolean
 }) {
   const [pending, setPending] = useState<PendingFile[]>([])

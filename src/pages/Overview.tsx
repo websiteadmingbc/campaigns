@@ -10,17 +10,20 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Plus } from 'lucide-react'
+import { Plus, Printer } from 'lucide-react'
 import { Button, EmptyState, ErrorMessage, KpiCard, LoadingState, PageHeader, StatusBadge } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 import { fetchCampaigns, fetchLeads, fetchMetrics } from '../lib/api'
 import { formatCurrency, formatDate, formatNumber, formatPercent } from '../lib/format'
 import { roi, sumMetrics, wonRevenue } from '../lib/metrics'
+import { fetchTraditionalCampaigns } from '../lib/traditionalApi'
+import type { TraditionalCampaign } from '../lib/traditionalTypes'
 import type { Campaign, DailyMetric, Lead } from '../lib/types'
 
 export function OverviewPage() {
   const { isAdmin } = useAuth()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [traditional, setTraditional] = useState<TraditionalCampaign[]>([])
   const [metrics, setMetrics] = useState<DailyMetric[]>([])
   const [leads, setLeads] = useState<Lead[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,10 +33,16 @@ export function OverviewPage() {
     setLoading(true)
     setError(null)
     try {
-      const [c, m, l] = await Promise.all([fetchCampaigns(false), fetchMetrics(), fetchLeads()])
+      const [c, m, l, t] = await Promise.all([
+        fetchCampaigns(false),
+        fetchMetrics(),
+        fetchLeads(),
+        fetchTraditionalCampaigns(false).catch(() => [] as TraditionalCampaign[]),
+      ])
       setCampaigns(c)
       setMetrics(m)
       setLeads(l)
+      setTraditional(t)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load overview')
     } finally {
@@ -85,15 +94,23 @@ export function OverviewPage() {
     <div>
       <PageHeader
         title="Overview"
-        subtitle="Active campaigns at a glance"
+        subtitle="Digital ads and traditional print efforts at a glance"
         actions={
           isAdmin ? (
-            <Link to="/campaigns/new">
-              <Button>
-                <Plus size={16} />
-                New campaign
-              </Button>
-            </Link>
+            <>
+              <Link to="/traditional/new">
+                <Button variant="secondary">
+                  <Printer size={16} />
+                  Add traditional
+                </Button>
+              </Link>
+              <Link to="/campaigns/new">
+                <Button>
+                  <Plus size={16} />
+                  New digital
+                </Button>
+              </Link>
+            </>
           ) : undefined
         }
       />
@@ -174,9 +191,9 @@ export function OverviewPage() {
         )}
       </section>
 
-      <section>
+      <section className="mb-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Campaigns</h2>
+          <h2 className="text-lg font-semibold">Digital campaigns</h2>
           <span className="text-xs text-[var(--color-ink-muted)]">{campaigns.length} total</span>
         </div>
 
@@ -227,6 +244,62 @@ export function OverviewPage() {
                   </li>
                 )
               })}
+            </ul>
+          </div>
+        )}
+      </section>
+
+      <section>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold">Traditional marketing</h2>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[var(--color-ink-muted)]">{traditional.length} total</span>
+            <Link to="/traditional" className="text-xs font-medium accent hover:underline">
+              View all
+            </Link>
+          </div>
+        </div>
+
+        {traditional.length === 0 ? (
+          <EmptyState
+            title="No traditional efforts yet"
+            description="Track door hangers, flyers, and promo cards with QR codes and short URLs."
+            action={
+              isAdmin ? (
+                <Link to="/traditional/new">
+                  <Button>Add traditional effort</Button>
+                </Link>
+              ) : undefined
+            }
+          />
+        ) : (
+          <div className="card-surface overflow-hidden">
+            <ul className="divide-y divide-[var(--color-border)]">
+              {traditional.slice(0, 5).map((c) => (
+                <li key={c.id}>
+                  <Link
+                    to={`/traditional/${c.id}`}
+                    className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-4 py-3.5 hover:bg-[var(--color-surface)] transition"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-medium truncate">{c.name}</p>
+                        <StatusBadge status={c.status} />
+                        <span className="text-xs rounded-md px-2 py-0.5 bg-[color-mix(in_srgb,var(--accent)_18%,transparent)]">
+                          {c.material_type}
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-xs text-[var(--color-ink-muted)] truncate">
+                        {c.short_url}
+                      </p>
+                    </div>
+                    <div className="flex gap-4 text-xs sm:text-sm text-[var(--color-ink-muted)]">
+                      <span>Cost {formatCurrency(c.material_cost)}</span>
+                      <span>Out {formatNumber(c.quantity_distributed)}</span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         )}
